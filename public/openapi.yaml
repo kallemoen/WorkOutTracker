@@ -1,0 +1,97 @@
+openapi: 3.0.1
+info:
+  title: Airtable Workouts Plugin
+  description: A plugin that allows the user to read, write, and update workouts using the Airtable API.
+  version: 'v1'
+servers:
+  - url: https://workouttracker.kallemoen2.repl.co/api
+paths:
+  /getWorkouts:
+    get:
+      operationId: getWorkouts
+      summary: Get the list of workouts
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getWorkoutsResponse'
+  /createWorkout:
+    post:
+      operationId: createWorkout
+      summary: Create a new workout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createWorkoutRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkoutRecord'
+  /updateWorkout/{workout_id}:
+    patch:
+      operationId: updateWorkout
+      summary: Update an existing workout
+      parameters:
+        - name: workout_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateWorkoutRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkoutRecord'
+components:
+  schemas:
+    getWorkoutsResponse:
+      type: object
+      properties:
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkoutRecord'
+          description: The list of workouts.
+    WorkoutRecord:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the workout.
+        fields:
+          $ref: '#/components/schemas/WorkoutFields'
+          description: The fields of the workout.
+    WorkoutFields:
+      type: object
+      properties:
+        # Add workout fields (e.g., name, date, etc.) here as needed
+        workout_name:
+          type: string
+          description: The name of the workout.
+    createWorkoutRequest:
+      type: object
+      properties:
+        fields:
+          $ref: '#/components/schemas/WorkoutFields'
+          description: The fields of the workout to create.
+    updateWorkoutRequest:
+      type: object
+      properties:
+        fields:
+          $ref: '#/components/schemas/WorkoutFields'
+          description: The fields of the workout to update.
